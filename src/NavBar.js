@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 
-import NavbarButton from './NavbarButton';
+import NavBarButton from './NavBarButton';
 import styles from './styles';
 
 const ButtonShape = {
@@ -37,7 +37,7 @@ function getButtonElement(data, style) {
   return (
     <View style={styles.navBarButtonContainer}>
       {(!data || data.props) ? data : (
-        <NavbarButton
+        <NavBarButton
           title={data.title}
           style={[data.style, style]}
           tintColor={data.tintColor}
