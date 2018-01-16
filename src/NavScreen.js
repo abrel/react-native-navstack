@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import {
   View,
   StyleSheet,
@@ -27,7 +28,7 @@ export default class NavScreen extends Component {
         scale: PropTypes.number,
       }),
       PropTypes.bool,
-    ]), 
+    ]),
 
   };
   getStyles() {
