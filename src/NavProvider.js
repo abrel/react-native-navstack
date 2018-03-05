@@ -12,8 +12,6 @@ import NavEvents from './NavEvents';
 import NavScreen from './NavScreen';
 import NavScreenTransitions from './transitions';
 
-
-
 export default class NavProvider extends Component {
   constructor(props) {
     super(props);
@@ -53,26 +51,26 @@ export default class NavProvider extends Component {
       transition: this.state.history.length > 0 ? transition : false,
     };
     if (!newScreen.transition) {
-      this.setState({
+      this.setState(() => ({
         history: [newScreen],
         stage: 'initial',
-      });
+      }));
       requestAnimationFrame(() => {
         this.inProgress = false;
       });
     }
     else {
       let history = [...this.state.history, newScreen];
-      this.setState({
+      this.setState(() => ({
         history,
         stage: 'pushStart',
-      });
+      }));
       requestAnimationFrame(() => {
         NavScreenTransitions[transition] &&
           LayoutAnimation.configureNext(NavScreenTransitions[transition].animation);
-        this.setState({
+        this.setState(() => ({
           stage: 'push',
-        });
+        }));
         setTimeout(() => {
           this.inProgress = false;
         }, NavScreenTransitions[transition].animation.duration);
@@ -89,23 +87,23 @@ export default class NavProvider extends Component {
 
     let currScreen = this.state.history[this.state.history.length - 1];
     let transition = currScreen.transition;
-    this.setState({
+    this.setState(() => ({
       stage: 'popStart'
-    });
+    }));
     requestAnimationFrame(() => {
       NavScreenTransitions[transition] &&
         LayoutAnimation.configureNext(NavScreenTransitions[transition].animation);
-      this.setState({
+      this.setState(() => ({
         stage: 'pop'
-      });
+      }));
     });
     setTimeout(() => {
       let history = [...this.state.history];
       history.pop();
-      this.setState({
+      this.setState(() => ({
         history: history,
         stage: 'popDone'
-      });
+      }));
       this.inProgress = false;
     }, NavScreenTransitions[transition].animation.duration);
   }
@@ -128,9 +126,13 @@ export default class NavProvider extends Component {
   }
 
   onLayout(event) {
-    this.setState({
-      layout: event.nativeEvent.layout
-    });
+    if (event.nativeEvent && event.nativeEvent.layout) {
+      event.persist();
+
+      this.setState(() => ({
+        layout: event.nativeEvent.layout
+      }));
+    }
   }
 
   getScreens() {
