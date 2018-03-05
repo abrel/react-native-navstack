@@ -126,9 +126,13 @@ export default class NavProvider extends Component {
   }
 
   onLayout(event) {
-    this.setState(() => ({
-      layout: event.nativeEvent.layout
-    }));
+    if (event.nativeEvent && event.nativeEvent.layout) {
+      event.persist();
+
+      this.setState(() => ({
+        layout: event.nativeEvent.layout
+      }));
+    }
   }
 
   getScreens() {
