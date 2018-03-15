@@ -27,10 +27,12 @@ export default class NavProvider extends Component {
     NavEvents.on('push', this.push);
     NavEvents.on('pop', this.pop);
 
-    UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
+    UIManager.setLayoutAnimationEnabledExperimental
+      && UIManager.setLayoutAnimationEnabledExperimental(true)
+    ;
   }
 
-  push(route, _routeProps, _transition = 'PushFromRight') {
+  push = (route, _routeProps, _transition = 'PushFromRight') => {
     if (!this.navScreens[route] || this.inProgress) {
       return;
     }
@@ -51,8 +53,7 @@ export default class NavProvider extends Component {
       requestAnimationFrame(() => {
         this.inProgress = false;
       });
-    }
-    else {
+    } else {
       let history = [...this.state.history, newScreen];
       this.setState(() => ({
         history,
@@ -69,10 +70,9 @@ export default class NavProvider extends Component {
         }, NavScreenTransitions[transition].animation.duration);
       });
     }
-  }
+  };
 
-
-  pop() {
+  pop = () => {
     if (this.state.history.length <= 1 || this.inProgress) {
       return false;
     }
@@ -99,7 +99,7 @@ export default class NavProvider extends Component {
       }));
       this.inProgress = false;
     }, NavScreenTransitions[transition].animation.duration);
-  }
+  };
 
   componentDidMount() {
     let initialRoute;
@@ -123,7 +123,7 @@ export default class NavProvider extends Component {
     NavEvents.removeListener('pop', this.pop);
   }
 
-  onLayout(event) {
+  onLayout = event => {
     if (event.nativeEvent && event.nativeEvent.layout) {
       event.persist();
 
@@ -131,9 +131,9 @@ export default class NavProvider extends Component {
         layout: event.nativeEvent.layout
       }));
     }
-  }
+  };
 
-  getScreens() {
+  getScreens = () => {
     if (this.state.history.length === 0 || !this.state.layout) {
       return null;
     }
@@ -159,12 +159,21 @@ export default class NavProvider extends Component {
     let index1 = Math.max(this.state.history.length - 2, 0);
     let index2 = Math.max(this.state.history.length - 1, 1);
     let screen1 = this.state.history[index1];
-    let screen2 = this.state.history[index2] ? this.state.history[index2] : false;
+    let screen2 = this.state.history[index2]
+      ? this.state.history[index2]
+      : false
+    ;
 
-    let transition = screen2 ? NavScreenTransitions[screen2.transition] : false;
+    let transition = screen2
+      ? NavScreenTransitions[screen2.transition]
+      : false
+    ;
 
-    let screen1Transition = transition &&
-      (this.state.stage === 'push' || this.state.stage === 'popStart') ? transition.screen1 : false;
+    let screen1Transition = transition && (this.state.stage === 'push' || this.state.stage === 'popStart')
+      ? transition.screen1
+      : false
+    ;
+
     screens.push(React.cloneElement(this.navScreens[screen1.route], {
       key: screen1.route,
       routeProps: screen1.routeProps,
@@ -173,8 +182,11 @@ export default class NavProvider extends Component {
     }));
 
     if (screen2) {
-      let screen2Transition = transition &&
-        (this.state.stage === 'pushStart' || this.state.stage === 'pop') ? transition.screen2 : false;
+      let screen2Transition = transition && (this.state.stage === 'pushStart' || this.state.stage === 'pop')
+        ? transition.screen2
+        : false
+      ;
+
       screens.push(React.cloneElement(this.navScreens[screen2.route], {
         key: screen2.route,
         routeProps: screen2.routeProps,
@@ -184,12 +196,14 @@ export default class NavProvider extends Component {
     }
 
     return screens;
-  }
-
+  };
 
   render() {
     return (
-      <View style={styles.provider} onLayout={this.onLayout.bind(this)}>
+      <View
+        style={styles.provider}
+        onLayout={this.onLayout}
+      >
         {this.getScreens()}
       </View>
     );
@@ -199,8 +213,6 @@ export default class NavProvider extends Component {
 
 const styles = StyleSheet.create({
   provider: {
-    // borderWidth: 2,
-    // borderColor: 'blue',
     position: 'absolute',
     overflow: 'hidden',
     top: 0,
