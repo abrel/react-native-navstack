@@ -13,31 +13,24 @@ import NavScreen from './NavScreen';
 import NavScreenTransitions from './transitions';
 
 export default class NavProvider extends Component {
-  constructor(props) {
-    super(props);
-
-    this.navScreens = {};
-
+  constructor() {
+    super();
     this.state = {
       layout: false,
       history: [],
       stage: '',
     };
+
+    this.navScreens = {};
     this.inProgress = false;
 
-    NavEvents.on('push', (route, routeProps, transition) => {
-      this.push(route, routeProps, transition || 'PushFromRight');
-    });
-
-    NavEvents.on('pop', () => {
-      this.pop();
-    });
+    NavEvents.on('push', this.push);
+    NavEvents.on('pop', this.pop);
 
     UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
-
   }
 
-  push(route, _routeProps, _transition) {
+  push(route, _routeProps, _transition = 'PushFromRight') {
     if (!this.navScreens[route] || this.inProgress) {
       return;
     }
@@ -123,6 +116,11 @@ export default class NavProvider extends Component {
     if (initialRoute) {
       this.push(initialRoute);
     }
+  }
+
+  componentWillUnmount() {
+    NavEvents.removeListener('push', this.push);
+    NavEvents.removeListener('pop', this.pop);
   }
 
   onLayout(event) {
